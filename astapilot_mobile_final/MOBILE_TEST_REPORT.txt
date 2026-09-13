@@ -1,0 +1,18 @@
+AstaPilot Mobile v1.0 — Test report
+Date: 2026-09-13
+
+Automated regression suite: 16/16 PASSED
+JavaScript syntax check: PASSED
+FastAPI startup: PASSED
+GET /api/health: 200 PASSED
+GET /: 200 PASSED
+GET /manifest.webmanifest: 200 PASSED
+POST /api/auth/register: 200 PASSED
+PWA service worker/manifest included: YES
+Stripe Checkout integration: IMPLEMENTED, requires production credentials
+Stripe signed/idempotent webhook: IMPLEMENTED, requires webhook secret
+
+Not testable without external production credentials:
+- live Stripe payment settlement
+- Apple App Store / Google Play signing and submission
+- authorized national auction feeds/API contracts

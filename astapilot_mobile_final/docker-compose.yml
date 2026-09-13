@@ -1,0 +1,12 @@
+services:
+  astapilot:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - astapilot_data:/data
+    env_file:
+      - .env
+    restart: unless-stopped
+volumes:
+  astapilot_data:

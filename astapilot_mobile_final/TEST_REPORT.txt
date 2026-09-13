@@ -1,0 +1,18 @@
+AstaPilot v0.9 validation
+=========================
+
+Python compileall: PASS
+Pytest regression suite: 16/16 PASS
+
+Covered behaviors include:
+- Asta Score v2 gates and score caps
+- 10 heterogeneous risk scenarios
+- automatic critical-risk extraction
+- cross-publisher canonical identity
+- non-sanabile vs sanabile conflict prevention
+- search filters
+- economic simulator / personal bid limit
+- legacy v0.3 ingestion regression
+
+Known production dependency:
+Full national coverage requires real authorized feed/API/source adapters and measured coverage. The prototype deliberately does not invent undocumented PVP endpoints.

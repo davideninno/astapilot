@@ -14,7 +14,7 @@ from .simulation import SimulationInput, SimulationResult, simulate
 from .auth import init_auth, RegisterIn, LoginIn, UserOut, register, login, require_user, logout, list_favorites, set_favorite, PLANS
 from .billing import CheckoutIn, create_checkout, handle_webhook
 
-VERSION = '1.0.0-mobile'
+VERSION = '1.1.0-national-ingestion'
 ROOT=Path(__file__).resolve().parents[2]
 MOBILE=ROOT/'mobile'
 
@@ -28,7 +28,10 @@ app.add_middleware(CORSMiddleware,allow_origins=['*'],allow_credentials=False,al
 
 @app.get('/api/health')
 def health():
-    s=ingestion_service.get_status(); return {'status':'ok','version':VERSION,'indexed_auctions':s.total_candidates,'sources':s.source_count}
+    s=ingestion_service.get_status()
+    return {'status':'ok','version':VERSION,'indexed_auctions':s.total_candidates,'sources':s.source_count,
+            'healthy_sources':s.healthy_sources,'degraded_sources':s.degraded_sources,
+            'failed_sources':s.failed_sources,'due_refresh':s.due_refresh_count}
 
 @app.post('/api/auth/register')
 def auth_register(payload:RegisterIn): return register(payload)
@@ -66,6 +69,12 @@ def simulation(payload:SimulationInput,user:UserOut=Depends(require_user)):
 
 @app.get('/api/ingestion/status',response_model=IngestionStatus)
 def ingestion_status(): return ingestion_service.get_status()
+@app.get('/api/admin/coverage')
+def coverage():
+    s=ingestion_service.get_status()
+    return {'sources':s.source_count,'healthy':s.healthy_sources,'degraded':s.degraded_sources,
+            'failed':s.failed_sources,'indexed_auctions':s.total_candidates,'analyzed':s.analyzed_count,
+            'due_refresh':s.due_refresh_count,'last_run':s.last_run}
 @app.get('/api/sources',response_model=list[AuctionSource])
 def sources(): return ingestion_service.list_sources()
 @app.get('/api/auctions/discovered',response_model=list[AuctionCandidate])

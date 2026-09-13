@@ -6,14 +6,16 @@ from .ingestion import ingestion_service
 
 
 class IngestionScheduler:
+    """Resilient autonomous ingestion scheduler."""
+
     def __init__(self):
         self._task: asyncio.Task | None = None
-        self.interval_seconds = int(os.getenv("INGESTION_INTERVAL_SECONDS", "21600"))  # 6h
+        self.interval_seconds = int(os.getenv("INGESTION_INTERVAL_SECONDS", "3600"))
+        self.startup_delay_seconds = int(os.getenv("INGESTION_STARTUP_DELAY_SECONDS", "5"))
         self.enabled = os.getenv("AUTO_INGESTION_ENABLED", "true").lower() in {"1", "true", "yes"}
 
     async def _loop(self):
-        # Run once shortly after startup, then on the configured interval.
-        await asyncio.sleep(2)
+        await asyncio.sleep(self.startup_delay_seconds)
         while True:
             try:
                 await ingestion_service.run_cycle()

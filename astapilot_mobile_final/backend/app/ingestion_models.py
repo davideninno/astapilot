@@ -30,7 +30,11 @@ class AuctionSource(BaseModel):
     coverage: str = "ITALY"
     adapter: str = "generic_sitemap"
     last_success_at: Optional[datetime] = None
+    last_checked_at: Optional[datetime] = None
     last_error: Optional[str] = None
+    consecutive_failures: int = 0
+    health: str = "UNKNOWN"
+    last_discovered_count: int = 0
 
 
 class AuctionDocument(BaseModel):
@@ -98,6 +102,8 @@ class IngestionStats(BaseModel):
     documents_unchanged: int = 0
     auctions_analyzed: int = 0
     duplicates: int = 0
+    queue_due: int = 0
+    queue_processed: int = 0
     errors: list[str] = Field(default_factory=list)
 
 
@@ -107,3 +113,7 @@ class IngestionStatus(BaseModel):
     total_candidates: int = 0
     source_count: int = 0
     analyzed_count: int = 0
+    healthy_sources: int = 0
+    degraded_sources: int = 0
+    failed_sources: int = 0
+    due_refresh_count: int = 0
